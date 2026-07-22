@@ -36,7 +36,24 @@ def predict():
         features,
         model_name=model_name
     )
-    return jsonify(result)
+    return jsonify({
+    "prediction": result["prediction"],
+    "confidence": result["confidence"],
+    "model": result["model"],
+    "features": {
+        "having_IP_Address": features[0],
+        "URL_Length": features[1],
+        "having_At_Symbol": features[2],
+        "double_slash_redirecting": features[3],
+        "Prefix_Suffix": features[4],
+        "having_Sub_Domain": features[5],
+        "SSLfinal_State": features[6],
+        "HTTPS_token": features[7],
+        "Shortining_Service": features[8],
+        "DNSRecord": features[9],
+        "URL_of_Anchor": features[10]
+    }
+})
 
 
 if __name__ == "__main__":

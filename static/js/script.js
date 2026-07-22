@@ -154,31 +154,49 @@
 
   // ---------- Update feature audit list ----------
   function updateFeatures(features) {
-    const items = featureList.querySelectorAll('.feature-item');
 
-    items.forEach((item) => {
-      const key = item.getAttribute('data-feature');
-      const statusEl = item.querySelector('[data-status]');
-      if (!statusEl || !(key in features)) return;
+    const featureMap = {
+        "https": features.SSLfinal_State,
+        "ip": features.having_IP_Address,
+        "at": features.having_At_Symbol,
+        "subdomain": features.having_Sub_Domain,
+        "length": features.URL_Length,
+        "shortener": features.Shortining_Service
+    };
 
-      const value = features[key];
+    document.querySelectorAll(".feature-item").forEach(item => {
 
-      if (key === 'subdomains') {
-        const count = Number(value) || 0;
-        const isNormal = count <= 2;
-        statusEl.textContent = `${count} ${isNormal ? '✔' : '✖'}`;
-        statusEl.setAttribute('data-value', String(isNormal));
-        return;
-      }
+        const featureName = item.dataset.feature;
+        const value = featureMap[featureName];
 
-      const isPositiveTrait = key === 'https';
-      const boolValue = Boolean(value);
-      const showCheck = isPositiveTrait ? boolValue : !boolValue;
+        item.classList.remove("safe", "danger", "warning");
 
-      statusEl.textContent = showCheck ? '✔' : '✖';
-      statusEl.setAttribute('data-value', String(showCheck));
+        const icon = item.querySelector(".feature-icon");
+
+        if (!icon) return;
+
+        if (value === 1) {
+
+            icon.innerHTML = "✓";
+            item.classList.add("safe");
+
+        }
+        else if (value === -1) {
+
+            icon.innerHTML = "✗";
+            item.classList.add("danger");
+
+        }
+        else {
+
+            icon.innerHTML = "!";
+            item.classList.add("warning");
+
+        }
+
     });
-  }
+
+}
 
   // ---------- Helpers ----------
   function clampPercentage(value) {
