@@ -77,6 +77,12 @@
       }
 
       const data = await response.json();
+
+      if (data.error) {
+          alert(data.error);
+          return;
+      }
+
       renderResult(data, url);
     } catch (error) {
       renderError(error);

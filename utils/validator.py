@@ -1,12 +1,35 @@
+import socket
 from urllib.parse import urlparse
 
-def validate_url(url):
 
-    try:
-        parsed = urlparse(url)
+class URLValidator:
 
-        return bool(parsed.scheme and parsed.netloc)
+    @staticmethod
+    def is_valid_url(url):
+        try:
+            parsed = urlparse(url)
 
-    except Exception:
+            if not parsed.scheme:
+                return False
 
-        return False
+            if not parsed.netloc:
+                return False
+
+            return True
+
+        except Exception:
+            return False
+
+    @staticmethod
+    def domain_exists(url):
+        try:
+            domain = urlparse(url).netloc
+
+            if ":" in domain:
+                domain = domain.split(":")[0]
+
+            socket.gethostbyname(domain)
+            return True
+
+        except Exception:
+            return False
