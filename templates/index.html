@@ -1,262 +1,392 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PhishGuard AI — Phishing URL Detection</title>
-  <meta name="description" content="Detect phishing URLs in real time using an XGBoost machine learning model.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PhishGuard AI — Phishing URL Detection</title>
+    <meta
+      name="description"
+      content="Detect phishing URLs in real time using an XGBoost machine learning model."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
 
-  <a class="skip-link" href="#main-content">Skip to main content</a>
-
-  <!-- ============ HEADER / NAVIGATION ============ -->
-  <header class="site-header">
-    <div class="container header-inner">
-      <a href="#" class="logo" aria-label="PhishGuard AI home">
-        <span class="logo-mark" aria-hidden="true">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 2L3 6V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V6L12 2Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
-            <path d="M8.5 12L11 14.5L16 9.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </span>
-        <span class="logo-text">PhishGuard<span class="logo-accent">AI</span></span>
-      </a>
-
-      <button class="nav-toggle" id="nav-toggle" aria-expanded="false" aria-controls="primary-nav" aria-label="Toggle navigation menu">
-        <span></span><span></span><span></span>
-      </button>
-
-      <nav class="primary-nav" id="primary-nav" aria-label="Primary">
-        <ul>
-          <li><a href="#home">Home</a></li>
-          <li><a href="#how-it-works">How It Works</a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#team">Team</a></li>
-          <li>
-            <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="nav-github" aria-label="View project on GitHub">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.56 0-.27-.01-1.17-.02-2.12-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.8 1.18 1.83 1.18 3.09 0 4.43-2.7 5.4-5.27 5.69.41.36.78 1.06.78 2.14 0 1.55-.01 2.79-.01 3.17 0 .31.21.67.79.56A10.51 10.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/>
-              </svg>
-              <span>GitHub</span>
-            </a>
-          </li>
-        </ul>
-      </nav>
-    </div>
-  </header>
-
-  <main id="main-content">
-
-    <!-- ============ HERO / DETECTOR ============ -->
-    <section class="hero" id="home" aria-labelledby="hero-heading">
-      <div class="container hero-inner">
-        <p class="eyebrow">Machine Learning · XGBoost</p>
-        <h1 id="hero-heading">AI Powered Phishing URL Detector</h1>
-        <p class="hero-subtitle">Analyze URLs using machine learning and XGBoost to identify phishing websites in real time.</p>
-
-        <form class="scanner" id="scanner-form" novalidate>
-          <label for="url-input" class="visually-hidden">Website URL to analyze</label>
-          <div class="scanner-field">
-            <svg class="scanner-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path d="M12 2L3 6V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V6L12 2Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
-            </svg>
-            <input
-              type="text"
-              id="url-input"
-              name="url"
-              placeholder="Enter a website URL..."
-              autocomplete="off"
-              spellcheck="false"
-              aria-describedby="url-example"
-              required
+    <!-- ============ HEADER / NAVIGATION ============ -->
+    <header class="site-header">
+      <div class="container header-inner">
+        <a href="#" class="logo" aria-label="PhishGuard AI home">
+          <span class="logo-mark" aria-hidden="true">
+            <svg
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
             >
-          </div>
-          <button type="submit" class="btn-primary" id="analyze-btn">
-            <span class="btn-label">Analyze URL</span>
-            <span class="btn-spinner" aria-hidden="true"></span>
-          </button>
-        </form>
-        <p class="scanner-hint" id="url-example">Example: https://example.com</p>
-
-        <!-- ============ RESULT CARD ============ -->
-        <div class="result-card" id="result-card" role="region" aria-live="polite" hidden>
-          <div class="result-header">
-            <span class="result-icon" id="result-icon" aria-hidden="true"></span>
-            <div>
-              <p class="result-label" id="result-label">Legitimate Website</p>
-              <p class="result-url" id="result-url"></p>
-            </div>
-          </div>
-
-          <div class="confidence-block">
-            <div class="confidence-top">
-              <span class="confidence-title">Confidence</span>
-              <span class="confidence-value" id="confidence-value">0%</span>
-            </div>
-            <div class="confidence-track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="confidence-bar" aria-label="Prediction confidence">
-              <div class="confidence-fill" id="confidence-fill"></div>
-            </div>
-          </div>
-
-          <div class="feature-audit">
-            <h3 class="feature-audit-title">URL Analysis</h3>
-            <ul class="feature-list" id="feature-list">
-              <li class="feature-item" data-feature="https">
-                <span class="feature-name">HTTPS</span>
-                <span class="feature-status" data-status></span>
-              </li>
-              <li class="feature-item" data-feature="ip">
-                <span class="feature-name">Contains IP Address</span>
-                <span class="feature-status" data-status></span>
-              </li>
-              <li class="feature-item" data-feature="at_symbol">
-                <span class="feature-name">Contains @ Symbol</span>
-                <span class="feature-status" data-status></span>
-              </li>
-              <li class="feature-item" data-feature="subdomains">
-                <span class="feature-name">Subdomain Count</span>
-                <span class="feature-status" data-status></span>
-              </li>
-              <li class="feature-item" data-feature="length">
-                <span class="feature-name">URL Length Normal</span>
-                <span class="feature-status" data-status></span>
-              </li>
-              <li class="feature-item" data-feature="shortener">
-                <span class="feature-name">Uses URL Shortener</span>
-                <span class="feature-status" data-status></span>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============ MODEL PERFORMANCE ============ -->
-    <section class="performance" aria-labelledby="performance-heading">
-      <div class="container">
-        <p class="eyebrow">Model Benchmarks</p>
-        <h2 id="performance-heading">Model Performance</h2>
-        <div class="metrics-grid">
-          <div class="metric-card">
-            <span class="metric-label">Accuracy</span>
-            <span class="metric-value" id="metric-accuracy">98.7%</span>
-          </div>
-          <div class="metric-card">
-            <span class="metric-label">Precision</span>
-            <span class="metric-value" id="metric-precision">97.8%</span>
-          </div>
-          <div class="metric-card">
-            <span class="metric-label">Recall</span>
-            <span class="metric-value" id="metric-recall">98.1%</span>
-          </div>
-          <div class="metric-card">
-            <span class="metric-label">F1 Score</span>
-            <span class="metric-value" id="metric-f1">97.9%</span>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ============ HOW IT WORKS ============ -->
-    <section class="how-it-works" id="how-it-works" aria-labelledby="how-it-works-heading">
-      <div class="container">
-        <p class="eyebrow">Pipeline</p>
-        <h2 id="how-it-works-heading">How It Works</h2>
-        <ol class="pipeline">
-          <li class="pipeline-step">
-            <span class="pipeline-index">01</span>
-            <h3>User Enters URL</h3>
-            <p>A URL is submitted for analysis through the scanner above.</p>
-          </li>
-          <li class="pipeline-step">
-            <span class="pipeline-index">02</span>
-            <h3>Feature Extraction</h3>
-            <p>Lexical and structural features are extracted from the URL string.</p>
-          </li>
-          <li class="pipeline-step">
-            <span class="pipeline-index">03</span>
-            <h3>XGBoost Prediction</h3>
-            <p>The trained gradient-boosted model classifies the URL and scores its confidence.</p>
-          </li>
-          <li class="pipeline-step">
-            <span class="pipeline-index">04</span>
-            <h3>Result Display</h3>
-            <p>The verdict, confidence, and extracted features are rendered instantly.</p>
-          </li>
-        </ol>
-      </div>
-    </section>
-
-    <!-- ============ ABOUT ============ -->
-    <section class="about" id="about" aria-labelledby="about-heading">
-      <div class="container about-inner">
-        <div class="about-text">
-          <p class="eyebrow">About the Project</p>
-          <h2 id="about-heading">A semester project in applied machine learning</h2>
-          <p>PhishGuard AI is a semester project for an Artificial Intelligence course. It classifies URLs as phishing or legitimate using a supervised machine learning model.</p>
-          <p>The classifier is trained with XGBoost on lexical and structural URL features. The backend is built with Flask, which handles feature extraction and serves predictions to this interface.</p>
-        </div>
-        <dl class="about-facts">
-          <div class="about-fact">
-            <dt>Model</dt>
-            <dd>XGBoost Classifier</dd>
-          </div>
-          <div class="about-fact">
-            <dt>Backend</dt>
-            <dd>Flask (Python)</dd>
-          </div>
-          <div class="about-fact">
-            <dt>Interface</dt>
-            <dd>HTML5, CSS3, JavaScript</dd>
-          </div>
-        </dl>
-      </div>
-    </section>
-
-  </main>
-
-  <!-- ============ FOOTER ============ -->
-  <footer class="site-footer" id="team">
-    <div class="container footer-inner">
-      <div class="footer-brand">
-        <span class="logo-text">PhishGuard<span class="logo-accent">AI</span></span>
-        <p>AI-based phishing URL detection, built as an academic semester project.</p>
-      </div>
-
-      <div class="footer-col">
-        <h3>Team</h3>
-        <ul>
-          <li>Muhammad Shehriyar</li>
-          <li>Muhammad Arsalan</li>
-          <li>Sigma Bouy</li>
-          <li>Muhammad Wasi</li>
-        </ul>
-      </div>
-
-      <div class="footer-col">
-        <h3>Department</h3>
-        <p>Department of Computer Science</p>
-        <p>University Name</p>
-      </div>
-
-      <div class="footer-col">
-        <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="footer-github" aria-label="View project on GitHub">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-            <path d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.56 0-.27-.01-1.17-.02-2.12-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.8 1.18 1.83 1.18 3.09 0 4.43-2.7 5.4-5.27 5.69.41.36.78 1.06.78 2.14 0 1.55-.01 2.79-.01 3.17 0 .31.21.67.79.56A10.51 10.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"/>
-          </svg>
+              <path
+                d="M12 2L3 6V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V6L12 2Z"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M8.5 12L11 14.5L16 9.5"
+                stroke="currentColor"
+                stroke-width="1.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </span>
+          <span class="logo-text"
+            >PhishGuard<span class="logo-accent">AI</span></span
+          >
         </a>
-      </div>
-    </div>
-    <div class="container footer-bottom">
-      <p>&copy; 2026 PhishGuard AI. All rights reserved.</p>
-    </div>
-  </footer>
 
-  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
-</body>
+        <button
+          class="nav-toggle"
+          id="nav-toggle"
+          aria-expanded="false"
+          aria-controls="primary-nav"
+          aria-label="Toggle navigation menu"
+        >
+          <span></span><span></span><span></span>
+        </button>
+
+        <nav class="primary-nav" id="primary-nav" aria-label="Primary">
+          <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#how-it-works">How It Works</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#team">Team</a></li>
+            <li>
+              <a
+                href="https://github.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="nav-github"
+                aria-label="View project on GitHub"
+              >
+                <svg
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.56 0-.27-.01-1.17-.02-2.12-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.8 1.18 1.83 1.18 3.09 0 4.43-2.7 5.4-5.27 5.69.41.36.78 1.06.78 2.14 0 1.55-.01 2.79-.01 3.17 0 .31.21.67.79.56A10.51 10.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"
+                  />
+                </svg>
+                <span>GitHub</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main-content">
+      <!-- ============ HERO / DETECTOR ============ -->
+      <section class="hero" id="home" aria-labelledby="hero-heading">
+        <div class="container hero-inner">
+          <p class="eyebrow">Machine Learning · XGBoost</p>
+          <h1 id="hero-heading">AI Powered Phishing URL Detector</h1>
+          <p class="hero-subtitle">
+            Analyze URLs using machine learning and XGBoost to identify phishing
+            websites in real time.
+          </p>
+
+          <form class="scanner" id="scanner-form" novalidate>
+            <label for="url-input" class="visually-hidden"
+              >Website URL to analyze</label
+            >
+            <div class="scanner-field">
+              <svg
+                class="scanner-icon"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M12 2L3 6V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V6L12 2Z"
+                  stroke="currentColor"
+                  stroke-width="1.6"
+                  stroke-linejoin="round"
+                />
+              </svg>
+              <input
+                type="text"
+                id="url-input"
+                name="url"
+                placeholder="Enter a website URL..."
+                autocomplete="off"
+                spellcheck="false"
+                aria-describedby="url-example"
+                required
+              />
+            </div>
+            <label for="model" class="visually-hidden"> Select AI Model </label>
+
+            <select id="model" name="model">
+              <option value="xgboost" selected>XGBoost</option>
+              <option value="lightgbm">LightGBM</option>
+            </select>
+            <button type="submit" class="btn-primary" id="analyze-btn">
+              <span class="btn-label">Analyze URL</span>
+              <span class="btn-spinner" aria-hidden="true"></span>
+            </button>
+          </form>
+          <p class="scanner-hint" id="url-example">
+            Example: https://example.com
+          </p>
+
+          <!-- ============ RESULT CARD ============ -->
+          <div
+            class="result-card"
+            id="result-card"
+            role="region"
+            aria-live="polite"
+            hidden
+          >
+            <div class="result-header">
+              <span
+                class="result-icon"
+                id="result-icon"
+                aria-hidden="true"
+              ></span>
+              <div>
+                <p class="result-label" id="result-label">Legitimate Website</p>
+                <p class="result-url" id="result-url"></p>
+              </div>
+            </div>
+
+            <div class="confidence-block">
+              <div class="confidence-top">
+                <span class="confidence-title">Confidence</span>
+                <span class="confidence-value" id="confidence-value">0%</span>
+              </div>
+              <div
+                class="confidence-track"
+                role="progressbar"
+                aria-valuemin="0"
+                aria-valuemax="100"
+                aria-valuenow="0"
+                id="confidence-bar"
+                aria-label="Prediction confidence"
+              >
+                <div class="confidence-fill" id="confidence-fill"></div>
+              </div>
+            </div>
+
+            <div class="feature-audit">
+              <h3 class="feature-audit-title">URL Analysis</h3>
+              <ul class="feature-list" id="feature-list">
+                <li class="feature-item" data-feature="https">
+                  <span class="feature-name">HTTPS</span>
+                  <span class="feature-status" data-status></span>
+                </li>
+                <li class="feature-item" data-feature="ip">
+                  <span class="feature-name">Contains IP Address</span>
+                  <span class="feature-status" data-status></span>
+                </li>
+                <li class="feature-item" data-feature="at_symbol">
+                  <span class="feature-name">Contains @ Symbol</span>
+                  <span class="feature-status" data-status></span>
+                </li>
+                <li class="feature-item" data-feature="subdomains">
+                  <span class="feature-name">Subdomain Count</span>
+                  <span class="feature-status" data-status></span>
+                </li>
+                <li class="feature-item" data-feature="length">
+                  <span class="feature-name">URL Length Normal</span>
+                  <span class="feature-status" data-status></span>
+                </li>
+                <li class="feature-item" data-feature="shortener">
+                  <span class="feature-name">Uses URL Shortener</span>
+                  <span class="feature-status" data-status></span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ MODEL PERFORMANCE ============ -->
+      <section class="performance" aria-labelledby="performance-heading">
+        <div class="container">
+          <p class="eyebrow">Model Benchmarks</p>
+          <h2 id="performance-heading">Model Performance</h2>
+          <div class="metrics-grid">
+            <div class="metric-card">
+              <span class="metric-label">Accuracy</span>
+              <span class="metric-value" id="metric-accuracy">98.7%</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">Precision</span>
+              <span class="metric-value" id="metric-precision">97.8%</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">Recall</span>
+              <span class="metric-value" id="metric-recall">98.1%</span>
+            </div>
+            <div class="metric-card">
+              <span class="metric-label">F1 Score</span>
+              <span class="metric-value" id="metric-f1">97.9%</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ HOW IT WORKS ============ -->
+      <section
+        class="how-it-works"
+        id="how-it-works"
+        aria-labelledby="how-it-works-heading"
+      >
+        <div class="container">
+          <p class="eyebrow">Pipeline</p>
+          <h2 id="how-it-works-heading">How It Works</h2>
+          <ol class="pipeline">
+            <li class="pipeline-step">
+              <span class="pipeline-index">01</span>
+              <h3>User Enters URL</h3>
+              <p>A URL is submitted for analysis through the scanner above.</p>
+            </li>
+            <li class="pipeline-step">
+              <span class="pipeline-index">02</span>
+              <h3>Feature Extraction</h3>
+              <p>
+                Lexical and structural features are extracted from the URL
+                string.
+              </p>
+            </li>
+            <li class="pipeline-step">
+              <span class="pipeline-index">03</span>
+              <h3>XGBoost Prediction</h3>
+              <p>
+                The trained gradient-boosted model classifies the URL and scores
+                its confidence.
+              </p>
+            </li>
+            <li class="pipeline-step">
+              <span class="pipeline-index">04</span>
+              <h3>Result Display</h3>
+              <p>
+                The verdict, confidence, and extracted features are rendered
+                instantly.
+              </p>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- ============ ABOUT ============ -->
+      <section class="about" id="about" aria-labelledby="about-heading">
+        <div class="container about-inner">
+          <div class="about-text">
+            <p class="eyebrow">About the Project</p>
+            <h2 id="about-heading">
+              A semester project in applied machine learning
+            </h2>
+            <p>
+              PhishGuard AI is a semester project for an Artificial Intelligence
+              course. It classifies URLs as phishing or legitimate using a
+              supervised machine learning model.
+            </p>
+            <p>
+              The classifier is trained with XGBoost on lexical and structural
+              URL features. The backend is built with Flask, which handles
+              feature extraction and serves predictions to this interface.
+            </p>
+          </div>
+          <dl class="about-facts">
+            <div class="about-fact">
+              <dt>Model</dt>
+              <dd>XGBoost Classifier</dd>
+            </div>
+            <div class="about-fact">
+              <dt>Backend</dt>
+              <dd>Flask (Python)</dd>
+            </div>
+            <div class="about-fact">
+              <dt>Interface</dt>
+              <dd>HTML5, CSS3, JavaScript</dd>
+            </div>
+          </dl>
+        </div>
+      </section>
+    </main>
+
+    <!-- ============ FOOTER ============ -->
+    <footer class="site-footer" id="team">
+      <div class="container footer-inner">
+        <div class="footer-brand">
+          <span class="logo-text"
+            >PhishGuard<span class="logo-accent">AI</span></span
+          >
+          <p>
+            AI-based phishing URL detection, built as an academic semester
+            project.
+          </p>
+        </div>
+
+        <div class="footer-col">
+          <h3>Team</h3>
+          <ul>
+            <li>Muhammad Shehriyar</li>
+            <li>Muhammad Arsalan</li>
+            <li>Sigma Bouy</li>
+            <li>Muhammad Wasi</li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h3>Department</h3>
+          <p>Department of Computer Science</p>
+          <p>University Name</p>
+        </div>
+
+        <div class="footer-col">
+          <a
+            href="https://github.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="footer-github"
+            aria-label="View project on GitHub"
+          >
+            <svg
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden="true"
+            >
+              <path
+                d="M12 .5C5.65.5.5 5.65.5 12c0 5.08 3.29 9.39 7.86 10.91.57.1.78-.25.78-.56 0-.27-.01-1.17-.02-2.12-3.2.7-3.88-1.36-3.88-1.36-.52-1.33-1.28-1.68-1.28-1.68-1.04-.71.08-.7.08-.7 1.15.08 1.76 1.18 1.76 1.18 1.03 1.75 2.7 1.25 3.36.96.1-.75.4-1.25.73-1.54-2.55-.29-5.24-1.28-5.24-5.7 0-1.26.45-2.29 1.18-3.09-.12-.29-.51-1.46.11-3.05 0 0 .96-.31 3.15 1.18a10.9 10.9 0 0 1 5.74 0c2.19-1.49 3.15-1.18 3.15-1.18.62 1.59.23 2.76.11 3.05.74.8 1.18 1.83 1.18 3.09 0 4.43-2.7 5.4-5.27 5.69.41.36.78 1.06.78 2.14 0 1.55-.01 2.79-.01 3.17 0 .31.21.67.79.56A10.51 10.51 0 0 0 23.5 12C23.5 5.65 18.35.5 12 .5z"
+              />
+            </svg>
+          </a>
+        </div>
+      </div>
+      <div class="container footer-bottom">
+        <p>&copy; 2026 PhishGuard AI. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  </body>
 </html>

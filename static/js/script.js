@@ -66,7 +66,10 @@
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ url })
+        body: JSON.stringify({
+    url,
+    model: document.getElementById("model").value
+})
       });
 
       if (!response.ok) {
