@@ -7,7 +7,6 @@ joblib==1.5.3
 MarkupSafe==3.0.3
 narwhals==2.23.0
 numpy==2.5.1
-nvidia-nccl-cu12==2.30.7
 pandas==3.0.3
 python-dateutil==2.9.0.post0
 scikit-learn==1.9.0
